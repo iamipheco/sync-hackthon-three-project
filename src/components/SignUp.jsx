@@ -208,7 +208,7 @@ const SignUp = () => {
                                 <p className="text-center text-sm">
                                     Already have an account?
                                     <Link
-                                        to="/signin"
+                                        to="/"
                                         className="font-bold cursor-pointer pl-1"
                                     >
                                         Login
