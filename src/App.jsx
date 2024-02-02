@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import { UserContext } from './utils/UserContext';
@@ -10,6 +10,7 @@ import Dashboard from './components/pages/Dashboard';
 
 const App = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [checkingAuth, setCheckingAuth] = useState(false);
   const [user, setUser] = useState({
     name: '',
@@ -22,14 +23,16 @@ const App = () => {
       (user) => {
         setUser(user);
         setCheckingAuth(false);
-        navigate('/dashboard');
+        // navigate('/');
       },
       () => {
         setCheckingAuth(false);
-        // navigate('/');
+        if (!location.pathname.includes('signup')) {
+          navigate('/signin');
+        }
       },
     );
-  }, [setUser, navigate]);
+  }, [setUser, navigate, location]);
 
   if (checkingAuth) {
     return (

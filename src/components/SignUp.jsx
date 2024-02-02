@@ -27,7 +27,7 @@ const SignUp = () => {
       .then((resp) => {
         setLoading(false);
         if (resp.success) {
-          navigate('/dashboard');
+          navigate('/signin');
         } else {
           alert(resp.message);
         }

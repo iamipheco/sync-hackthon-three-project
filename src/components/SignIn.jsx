@@ -47,7 +47,7 @@ const SignInPage = () => {
           const callback = (data) => {
             setLoading(false);
             setUser(data);
-            navigate('/dashboard');
+            navigate('/');
           };
           const errCb = () => setLoading(false);
           getUserProfile(callback, errCb);
@@ -188,7 +188,7 @@ const SignInPage = () => {
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <g clip-path="url(#clip0_3_274)">
+                      <g clipPath="url(#clip0_3_274)">
                         <path
                           d="M17.64 9.20443C17.64 8.56625 17.5827 7.95262 17.4764 7.36353H9V10.8449H13.8436C13.635 11.9699 13.0009 12.9231 12.0477 13.5613V15.8194H14.9564C16.6582 14.2526 17.64 11.9453 17.64 9.20443Z"
                           fill="#4285F4"
