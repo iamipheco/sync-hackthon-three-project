@@ -3,8 +3,10 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import { UserContext } from './utils/UserContext';
-import Dashboard from './components/Dashboard';
+
 import { init } from './utils/helpers';
+import MainLayout from './components/MainLayout';
+import Dashboard from './components/pages/Dashboard';
 
 const App = () => {
   const navigate = useNavigate();
@@ -41,15 +43,11 @@ const App = () => {
     <UserContext.Provider value={{ user, setUser }}>
       <div>
         <Routes>
-          {/* <Route
-            path="/"
-            element={< />}
-          >
+          <Route path="/" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
-          </Route> */}
+          </Route>
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<SignIn />} />
+          <Route path="/signin" element={<SignIn />} />
         </Routes>
       </div>
     </UserContext.Provider>
