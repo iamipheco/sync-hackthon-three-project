@@ -75,7 +75,7 @@ const Sidebar = () => {
             alt="logo"
           />
         </div>
-        <div className="mt-10 flex flex-col gap-4 relative">
+        <div className="mb-10 mt-[26px] flex flex-col gap-4 relative">
           {sideData.map((data, i) => (
             <Link
               to={data.link}
@@ -84,19 +84,19 @@ const Sidebar = () => {
               onMouseEnter={() => handleMouseEnter(i + 1)}
               onMouseLeave={() => handleMouseLeave(i + 1)}
             >
-              <div>
+              <div className="">
                 {React.cloneElement(data.icon, {
                   color: hoveredIcons[i + 1] ? "#fff" : "#697689",
                 })}
               </div>
               <h2
                 style={{ transitionDelay: `${i + 0.05}00ms` }}
-                className={`whitespace-pre duration-500 ${!isOpen && "scale-0 translate-x-28 overflow-hidden"}`}
+                className={`whitespace-pre duration-500 ml-3 ${!isOpen && "scale-0 translate-x-28 overflow-hidden"}`}
               >
                 {data.name}
               </h2>
               <h2
-                className={`${isOpen && "hidden"} absolute left-28 bg-white font-medium whitespace-pre text-[#34CAA5] rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit `}
+                className={`${isOpen && "hidden"} absolute left-28 bg-white font-medium whitespace-pre rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit `}
               >
                 {data.name}
               </h2>

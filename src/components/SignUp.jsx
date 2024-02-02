@@ -1,150 +1,177 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { postApi } from '../utils';
-import logoImage from '../assets/img/logo.png';
-import bgFlow from '../assets/img/bg.jpg';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import logoImage from "../assets/img/logo.png";
+import bgFlow from "../assets/img/bg.jpg";
 
 const SignUp = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    full_name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [loading, setLoading] = useState(false);
+    const [fullname, setFullName] = useState(""); // Fixed the syntax error
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+   
+    const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const handleEmailChange = (e) => {
+        const newEmail = e.target.value;
+        setEmail(newEmail);
+        localStorage.setItem("email", JSON.stringify(newEmail));
+    };
 
-  const handleSubmit = (e) => {
-    if (formData && formData) e.preventDefault();
-    setLoading(true);
-    // Add your signup logic here using formData
-    console.log('Form submitted:', formData);
-    postApi('users/register', formData)
-      .then((resp) => {
-        setLoading(false);
-        if (resp.success) {
-          alert('Registration successful, Please verify your email.');
-          navigate('/signin');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+      
+        const body = {
+            email,
+            full_name: fullname, // Fixed the property name
+            password,
+        };
+
+        const baseUrl = "https://flowease.onrender.com/api";
+      
+        setErrors(""); // Changed passwordError to setErrors
+
+        if (password.length < 8) {
+            setIsLoading(false);
+            setErrors("Password should be at least 8 characters");
+        } else if (password !== confirmPassword) {
+            setIsLoading(false);
+            setErrors("Passwords do not match");
         } else {
-          alert(resp.message);
+            try {
+                setIsLoading(true);
+                const res = await axios.post(`${baseUrl}/users/register`, body);
+                console.log(res, "hgjfjfyxf");
+                if (res.data.success === true) {
+                    setIsLoading(false);
+                    setErrors(res.data.message);
+                    navigate("/verify");
+                } else if (res.data.success === false && res.data.message === "Username already taken") { 
+                    setIsLoading(false);
+                    setErrors("Username already taken. Please choose a different username.");
+                } else if (res.data.success === true && res.data.message === "User with email address exists") {
+                    setIsLoading(false);
+                    setErrors("User with email address already exists. Please use a different email.");
+                } 
+            } catch (error) {
+                setIsLoading(false);
+                console.error(error); // Log the error for debugging
+            }
         }
-      })
-      .catch((err) => {
-        setLoading(false);
-        alert(err.message);
-      });
-  };
+    };
 
-  return (
-    <div
-      className="bg-cover bg-center bg-fixed"
-      style={{ backgroundImage: `url(${bgFlow})` }}
-    >
-      <section className="p-6">
-        <div className="container flex flex-col items-center">
-          <div className="w-[500px] bg-white rounded-md p-[32px]">
-            <img src={logoImage} alt="flowease-logo" className="mx-auto w-32" />
-            <h1 className="text-base text-textDeep leading-10 text-center pt-[22px] capitalize">
-              Sign up
-            </h1>
-            <form
-              className="mt-[28px] w-[350px] mx-auto"
-              onSubmit={handleSubmit}
-            >
-              {/* Full Name */}
-              <div className="relative">
-                <input
-                  type="text"
-                  id="full_name"
-                  name="full_name"
-                  placeholder="Full Name"
-                  value={formData.full_name}
-                  onChange={handleChange}
-                  className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
+    const navigate = useNavigate();
+
+    return (
+        <div
+            className="bg-cover bg-center bg-fixed"
+            style={{ backgroundImage: `url(${bgFlow})` }}
+        >
+            <section className="p-6">
+                <div className="container flex flex-col items-center">
+                    <div className="w-[500px] bg-white rounded-md p-[32px]">
+                        <img
+                            src={logoImage}
+                            alt="flowease-logo"
+                            className="mx-auto w-32"
+                        />
+                        <h1 className="text-base text-textDeep leading-10 text-center pt-[22px] capitalize">
+                            Sign up
+                        </h1>
+                        <form
+                            className="mt-[28px] w-[350px] mx-auto"
+                            onSubmit={(e) => handleSubmit(e)}
+                        >
+                            {/* Full Name */}
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    id="full_name"
+                                    name="full_name"
+                                    placeholder="Full Name"
+                                    value={fullname}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
-                />
-                <label
-                  htmlFor="Full Name"
-                  className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
+                                />
+                                <label
+                                    htmlFor="Full Name"
+                                    className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
                   peer-placeholder-shown:text-gray-600
                   peer-placeholder-shown:top-3
                   transition all
                   peer-focus:-top-2
                   peer-focus:text-textColor
                   peer-focus:text-sm"
-                >
-                  Full Name
-                </label>
-              </div>
-              {/* Email */}
-              <div className="mt-7 relative">
-                <input
-                  type="text"
-                  id="email"
-                  name="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
+                                >
+                                    Full Name
+                                </label>
+                            </div>
+                            {/* Email */}
+                            <div className="mt-7 relative">
+                                <input
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Email"
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                    className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
-                />
-                <label
-                  htmlFor="Email"
-                  className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
+                                />
+                                <label
+                                    htmlFor="Email"
+                                    className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
                   peer-placeholder-shown:text-gray-600
                   peer-placeholder-shown:top-3
                   transition all
                   peer-focus:-top-2
                   peer-focus:text-textColor
                   peer-focus:text-sm"
-                >
-                  Email
-                </label>
-              </div>
-              {/* Password */}
-              <div className="mt-7 relative">
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
+                                >
+                                    Email
+                                </label>
+                            </div>
+                            {/* Password */}
+                            <div className="mt-7 relative">
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
-                />
-                <label
-                  htmlFor="password"
-                  className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
+                                />
+                                <label
+                                    htmlFor="password"
+                                    className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
                   peer-placeholder-shown:text-gray-600
                   peer-placeholder-shown:top-3
                   transition all
                   peer-focus:-top-2
                   peer-focus:text-textColor
                   peer-focus:text-sm"
-                >
-                  Password
-                </label>
-              </div>
-              {/* Confirm Password */}
-              <div className="mt-7 relative">
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  placeholder="Confirm Password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
+                                >
+                                    Password
+                                </label>
+                            </div>
+                            {/* Confirm Password */}
+                            <div className="mt-7 relative">
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    placeholder="Confirm Password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
-                />
-                <label
-                  htmlFor="confirmPassword"
-                  className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
+                                />
+                                <label
+                                    htmlFor="confirmPassword"
+                                    className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
                   peer-placeholder-shown:text-gray-600
                   peer-placeholder-shown:top-3
                   transition all
@@ -213,7 +240,7 @@ const SignUp = () => {
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <g clipPath="url(#clip0_3_274)">
+                      <g clip-path="url(#clip0_3_274)">
                         <path
                           d="M17.64 9.20443C17.64 8.56625 17.5827 7.95262 17.4764 7.36353H9V10.8449H13.8436C13.635 11.9699 13.0009 12.9231 12.0477 13.5613V15.8194H14.9564C16.6582 14.2526 17.64 11.9453 17.64 9.20443Z"
                           fill="#4285F4"
