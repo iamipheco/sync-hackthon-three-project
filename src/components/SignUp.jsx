@@ -19,7 +19,7 @@ const SignUp = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (formData && formData) e.preventDefault();
     setLoading(true);
     // Add your signup logic here using formData
     console.log('Form submitted:', formData);

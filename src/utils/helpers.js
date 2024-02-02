@@ -12,10 +12,12 @@ export const init = (success=f=>f, error=f=>f) => {
                 } else {
                     // error returned
                     error(resp)
-                }
+                localStorage.removeItem(TOKEN_KEY)
+            }
             })
             .catch((err) => {
                 // request failed
+                localStorage.removeItem(TOKEN_KEY)
                 error(err)
                 console.log(err);
             });

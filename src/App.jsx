@@ -32,7 +32,7 @@ const App = () => {
         }
       },
     );
-  }, [setUser, navigate, location]);
+  }, [navigate, location]);
 
   if (checkingAuth) {
     return (
