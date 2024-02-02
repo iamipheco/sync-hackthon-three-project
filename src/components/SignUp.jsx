@@ -243,11 +243,11 @@ const SignUp = () => {
                                 </div>
                             </div>
                             {/* Login Link */}
-                            <div className="mt-4">
+                            <div className="mt-7">
                                 <p className="text-center text-sm">
                                     Already have an account?
                                     <Link
-                                        to="/"
+                                        to="/signin"
                                         className="font-bold cursor-pointer pl-1"
                                     >
                                         Login
