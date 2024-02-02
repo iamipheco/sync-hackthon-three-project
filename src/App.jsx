@@ -24,7 +24,7 @@ const App = () => {
       },
       () => {
         setCheckingAuth(false);
-        navigate('/');
+        // navigate('/');
       },
     );
   }, [setUser, navigate]);
