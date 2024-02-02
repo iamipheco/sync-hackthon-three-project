@@ -1,42 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { postApi } from '../utils';
 import logoImage from '../assets/img/logo.png';
 import bgFlow from '../assets/img/bg.jpg';
 
 const SignUp = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    full_name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    // Add your signup logic here using formData
-    console.log('Form submitted:', formData);
-    postApi('users/register', formData)
-      .then((resp) => {
-        setLoading(false);
-        if (resp.success) {
-          navigate('/signin');
-        } else {
-          alert(resp.message);
-        }
-      })
-      .catch((err) => {
-        setLoading(false);
-        alert(err.message);
-      });
-  };
 
   return (
     <div
@@ -261,7 +228,7 @@ const SignUp = () => {
               <div className="mt-4">
                 <p className="text-center text-sm">
                   Already have an account?
-                  <Link to="/" className="font-bold cursor-pointer pl-1">
+                  <Link to="/signin" className="font-bold cursor-pointer pl-1">
                     Login
                   </Link>
                 </p>

@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import { CiSearch } from "react-icons/ci";
+import React from "react";
 import UserProfile from "./UserProfile";
 import Notifications from "./Notifications";
-// import CalendarPaper from "./CalendarPaper";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { PiHandFill } from "react-icons/pi";
@@ -24,10 +22,6 @@ const Header = () => {
                         </div>
                     </Link>
                 </div>
-                {/* <div className="mr-4 hidden md:block md:shrink-0">
-
-                <CalendarPaper />
-                </div> */}
                 <div className="mr-16 md:shrink-0">
                     <Notifications />
                 </div>
