@@ -91,12 +91,12 @@ const Sidebar = () => {
               </div>
               <h2
                 style={{ transitionDelay: `${i + 0.05}00ms` }}
-                className={`whitespace-pre duration-500 ${!isOpen && "scale-0 translate-x-28 overflow-hidden"}`}
+                className={`whitespace-pre duration-500 ml-3 ${!isOpen && "scale-0 translate-x-28 overflow-hidden"}`}
               >
                 {data.name}
               </h2>
               <h2
-                className={`${isOpen && "hidden"} absolute left-28 bg-white font-medium whitespace-pre text-[#34CAA5] rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit `}
+                className={`${isOpen && "hidden"} absolute left-28 bg-white font-medium whitespace-pre rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit `}
               >
                 {data.name}
               </h2>

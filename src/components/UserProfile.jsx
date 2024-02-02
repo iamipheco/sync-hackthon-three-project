@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import UserProfPic from "../assets/img/user-prof.png";
-import { ArrowDown2 } from "iconsax-react";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 
 const UserProfile = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -64,10 +64,8 @@ const UserProfile = () => {
                     ref={userProRef}
                     className=" hidden sm:block p-1 transition-colors duration-500"
                 >
-                    <ArrowDown2
-                        size="16"
-                        color="#E1DFDF"
-                        variant="Outline"
+                    <HiOutlineDotsVertical
+                        size="18"
                         className="hidden sm:block"
                     />
                 </div>
