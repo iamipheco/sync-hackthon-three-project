@@ -1,10 +1,64 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logoImage from "../assets/img/logo.png";
 import bgFlow from "../assets/img/bg.jpg";
 import AppleSVG from "./SVGs/AppleSVG";
+import axios from "axios";
 
-const SignInPage = () => {
+const SignIn = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState("");
+    const navigate = useNavigate();
+
+    const handleSignIn = async (e) => {
+        e.preventDefault();
+
+        const body = {
+            email,
+            password
+        }
+
+        try {
+            setIsLoading(true);
+            const res = await axios.post(
+                "https://flowease.onrender.com/api/users/login", body
+            );
+
+            console.log(res);
+
+            if (res.status === 200) {
+                const decodedToken = jwtDecode(res.data.message);
+                const token = res.data.message;
+
+                // Consider using more secure storage methods
+                localStorage.setItem("authToken", token);
+
+                setAuthUser(decodedToken);
+                setIsLoading(false);
+                setErrors("");
+                navigate("/");
+            } else {
+                handleSignInError(res.data.message);
+            }
+        } catch (error) {
+            handleSignInError(error.message);
+        }
+    };
+
+    const handleSignInError = (message) => {
+        setIsLoading(false);
+
+        if (message === "Incorrect Credentials") {
+            setErrors("Incorrect Credentials");
+        } else if (message === "User is not registered") {
+            setErrors("User is not Registered ");
+        } else {
+            setErrors("An error occurred during sign-in.");
+        }
+    };
+
     return (
         <div
             className="bg-cover bg-center bg-fixed h-screen"
@@ -21,9 +75,18 @@ const SignInPage = () => {
                         <h1 className="text-base text-textDeep leading-10 text-center pt-10 capitalize">
                             Let's sign you in
                         </h1>
+                        <div className="">
+                            {/* error message */}
+                            {errors && (
+                                <p className="text-red-500 text-sm text-center mb-3">
+                                    {errors}
+                                </p>
+                            )}
+                        </div>
+
                         <form
                             className="mt-10 w-[350px] mx-auto"
-                            onSubmit={handleSubmit}
+                            onSubmit={(e) => handleSignIn(e)}
                         >
                             {/* Email */}
                             <div className="mt-7 relative">
@@ -32,8 +95,8 @@ const SignInPage = () => {
                                     id="email"
                                     name="email"
                                     placeholder="Email"
-                                    value={formData.email}
-                                    onChange={handleChange}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
                                 />
@@ -57,8 +120,10 @@ const SignInPage = () => {
                                     id="password"
                                     name="password"
                                     placeholder="Password"
-                                    value={formData.password}
-                                    onChange={handleChange}
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                     className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
                                 />
@@ -99,14 +164,14 @@ const SignInPage = () => {
                                     Forgot Password?
                                 </Link>
                             </div>
+                            
                             {/* Submit Button */}
                             <button
                                 type="submit"
-                                disabled={loading}
-                                // value="Sign In"
+                                disabled={isLoading}
                                 className="mt-[36px] bg-[#F4530F] w-full h-[48px] text-white rounded-2xl cursor-pointer"
                             >
-                                {loading && (
+                                {isLoading && (
                                     <svg
                                         aria-hidden="true"
                                         role="status"
@@ -207,4 +272,4 @@ const SignInPage = () => {
     );
 };
 
-export default SignInPage;
+export default SignIn;
