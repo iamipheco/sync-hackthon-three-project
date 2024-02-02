@@ -75,7 +75,7 @@ const Sidebar = () => {
             alt="logo"
           />
         </div>
-        <div className="mt-10 flex flex-col gap-4 relative">
+        <div className="mb-10 mt-[26px] flex flex-col gap-4 relative">
           {sideData.map((data, i) => (
             <Link
               to={data.link}
@@ -84,7 +84,7 @@ const Sidebar = () => {
               onMouseEnter={() => handleMouseEnter(i + 1)}
               onMouseLeave={() => handleMouseLeave(i + 1)}
             >
-              <div>
+              <div className="">
                 {React.cloneElement(data.icon, {
                   color: hoveredIcons[i + 1] ? "#fff" : "#697689",
                 })}

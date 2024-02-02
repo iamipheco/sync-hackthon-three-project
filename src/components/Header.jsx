@@ -20,7 +20,7 @@ const Header = () => {
                             <div className="bg-[#F4530F] border-none p-[2px] rounded-sm">
                                 <FaPlus color="white" />
                             </div>
-                            <p className="text-sm">Create a Project</p>
+                            <p className="text-sm hover:text-[#F4530F]">Create a Project</p>
                         </div>
                     </Link>
                 </div>

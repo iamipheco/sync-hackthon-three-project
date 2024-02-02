@@ -3,7 +3,6 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import { UserContext } from './utils/UserContext';
-
 import { init } from './utils/helpers';
 import MainLayout from './components/MainLayout';
 import Dashboard from './components/pages/Dashboard';
