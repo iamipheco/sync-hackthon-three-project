@@ -58,10 +58,10 @@ const SignUp = () => {
               <div className="relative">
                 <input
                   type="text"
-                  id="fullname"
-                  name="fullname"
+                  id="full_name"
+                  name="full_name"
                   placeholder="Full Name"
-                  value={formData.fullname}
+                  value={formData.full_name}
                   onChange={handleChange}
                   className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
