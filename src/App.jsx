@@ -16,11 +16,11 @@ const App = () => {
     <AuthProvider>
       <div>
         <Routes>
-          <Route path="/" element={<MainLayout />}>
+          <Route path="/dashboard" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
           </Route>
           <Route path="/signup" element={<Register />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route path="/" element={<SignIn />} />
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/verify" element={<EmailVerify />} />
 

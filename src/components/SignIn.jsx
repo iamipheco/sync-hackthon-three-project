@@ -32,7 +32,7 @@ const SignIn = () => {
             if (resp.data.success === true) {
                 setIsLoading(false);
                 setErrors("");
-                navigate("/");
+                navigate("/dashboard");
             } else {
                 throw new Error(
                     resp.data.message || "An error occurred during sign-in."

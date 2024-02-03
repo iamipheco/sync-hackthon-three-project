@@ -242,9 +242,8 @@ const Register = () => {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                // value="Signup"
-                               
- className="mt-9 bg-gradient-to-b from-[#F4530F] to-[#ff6929] hover:from-[#ff6929] hover:to-[#F4530F] transition-all  w-full h-[48px] text-white rounded-2xl cursor-pointer"                            >
+                                className="mt-9 bg-gradient-to-b from-[#F4530F] to-[#ff6929] hover:from-[#ff6929] hover:to-[#F4530F] transition-all  w-full h-[48px] text-white rounded-2xl cursor-pointer"
+                            >
                                 {isLoading && (
                                     <LoadingSVG /> // loading spinner
                                 )}
