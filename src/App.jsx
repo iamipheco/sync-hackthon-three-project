@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import SignIn from './components/SignIn';
-import SignUp from './components/SignUp';
 import MainLayout from './components/MainLayout';
 import Dashboard from './components/pages/Dashboard';
+import Register from './components/Register';
+import { AuthProvider } from './context/AuthContext';
+import EmailVerify from './components/pages/EmailVerify';
+import ForgetPassword from './components/ForgetPassword';
+
 
 const App = () => {
 
   return (
     
+    <AuthProvider>
       <div>
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
           </Route>
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signup" element={<Register />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/forgot-password" element={<ForgetPassword />} />
+          <Route path="/verify" element={<EmailVerify />} />
+
         </Routes>
       </div>
+      </AuthProvider>
    
   );
 };

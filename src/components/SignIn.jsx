@@ -4,58 +4,47 @@ import logoImage from "../assets/img/logo.png";
 import bgFlow from "../assets/img/bg.jpg";
 import AppleSVG from "./SVGs/AppleSVG";
 import axios from "axios";
+import GoogleSVG from "./SVGs/GoogleSVG";
+import LoadingSVG from "./SVGs/LoadingSVG";
 
 const SignIn = () => {
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState("");
     const navigate = useNavigate();
+    const baseUrl = "https://flowease.onrender.com/api";
 
     const handleSignIn = async (e) => {
         e.preventDefault();
 
         const body = {
             email,
-            password
-        }
+            password,
+        };
 
         try {
             setIsLoading(true);
-            const res = await axios.post(
-                "https://flowease.onrender.com/api/users/login", body
-            );
 
-            console.log(res);
+            const resp = await axios.post(`${baseUrl}/users/login`, body);
 
-            if (res.status === 200) {
-                const decodedToken = jwtDecode(res.data.message);
-                const token = res.data.message;
-
-                // Consider using more secure storage methods
-                localStorage.setItem("authToken", token);
-
-                setAuthUser(decodedToken);
+            if (resp.data.success === true) {
                 setIsLoading(false);
                 setErrors("");
                 navigate("/");
             } else {
-                handleSignInError(res.data.message);
+                throw new Error(
+                    resp.data.message || "An error occurred during sign-in."
+                );
             }
         } catch (error) {
-            handleSignInError(error.message);
-        }
-    };
-
-    const handleSignInError = (message) => {
-        setIsLoading(false);
-
-        if (message === "Incorrect Credentials") {
-            setErrors("Incorrect Credentials");
-        } else if (message === "User is not registered") {
-            setErrors("User is not Registered ");
-        } else {
-            setErrors("An error occurred during sign-in.");
+            setErrors(error.response.data.message);
+            setIsLoading(false);
+            
+            setTimeout(() => {
+                setErrors("");
+            }, 10000); // clear error message after 10 seconds
         }
     };
 
@@ -66,7 +55,7 @@ const SignIn = () => {
         >
             <section className="p-10">
                 <div className="container flex flex-col items-center">
-                    <div className="w-[500px] bg-white rounded-md p-[32px]">
+                    <div className="w-full max-w-[500px] bg-white rounded-md p-[32px]">
                         <img
                             src={logoImage}
                             alt="flowease-logo"
@@ -78,14 +67,14 @@ const SignIn = () => {
                         <div className="">
                             {/* error message */}
                             {errors && (
-                                <p className="text-red-500 text-sm text-center mb-3">
+                                <p className="text-red-500 text-sm text-center mt-5">
                                     {errors}
                                 </p>
                             )}
                         </div>
 
                         <form
-                            className="mt-10 w-[350px] mx-auto"
+                            className="mt-10 w-full mx-auto max-w-[350px]"
                             onSubmit={(e) => handleSignIn(e)}
                         >
                             {/* Email */}
@@ -159,94 +148,44 @@ const SignIn = () => {
                                 </div>
                                 <Link
                                     to="/forgot-password"
-                                    className="text-textColor text-sm font-sans"
+                                    className="text-textColor text-sm font-sans text-[#F4530F] hover:text-slate-950 duration-300"
                                 >
                                     Forgot Password?
                                 </Link>
                             </div>
-                            
+
                             {/* Submit Button */}
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="mt-[36px] bg-[#F4530F] w-full h-[48px] text-white rounded-2xl cursor-pointer"
+                                className="mt-9 bg-gradient-to-b from-[#F4530F] to-[#ff6929] hover:from-[#ff6929] hover:to-[#F4530F] transition-all  w-full h-[48px] text-white rounded-2xl cursor-pointer"
                             >
                                 {isLoading && (
-                                    <svg
-                                        aria-hidden="true"
-                                        role="status"
-                                        className="inline w-4 h-4 me-3 text-white animate-spin"
-                                        viewBox="0 0 100 101"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                            fill="#E5E7EB"
-                                        />
-                                        <path
-                                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                            fill="currentColor"
-                                        />
-                                    </svg>
+                                    
+                                    <LoadingSVG /> // loading spinner
                                 )}
                                 Sign In
                             </button>
                             {/* Social Logins */}
-                            <div className="mt-10 flex flex-col lg:flex-row justify-between gap-[10px]">
-                                <div className="border py-[10px] px-[41px] lg:rounded-xl cursor-pointer flex items-center justify-center">
+                            <div className="mt-6 flex  lg:flex-row justify-around gap-[10px]">
+                                <div className="border py-2 px-8  rounded-lg cursor-pointer flex items-center justify-center lg:mt-0">
                                     <Link
                                         to="/google-login"
-                                        className="flex items-center gap-7"
+                                        className="flex items-center gap-3"
                                     >
-                                        <svg
-                                            width="18"
-                                            height="18"
-                                            viewBox="0 0 18 18"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <g clipPath="url(#clip0_3_274)">
-                                                <path
-                                                    d="M17.64 9.20443C17.64 8.56625 17.5827 7.95262 17.4764 7.36353H9V10.8449H13.8436C13.635 11.9699 13.0009 12.9231 12.0477 13.5613V15.8194H14.9564C16.6582 14.2526 17.64 11.9453 17.64 9.20443Z"
-                                                    fill="#4285F4"
-                                                />
-                                                <path
-                                                    d="M8.99976 18C11.4298 18 13.467 17.1941 14.9561 15.8195L12.0475 13.5613C11.2416 14.1013 10.2107 14.4204 8.99976 14.4204C6.65567 14.4204 4.67158 12.8372 3.96385 10.71H0.957031V13.0418C2.43794 15.9831 5.48158 18 8.99976 18Z"
-                                                    fill="#34A853"
-                                                />
-                                                <path
-                                                    d="M3.96409 10.7101C3.78409 10.1701 3.68182 9.59325 3.68182 9.00007C3.68182 8.40689 3.78409 7.83007 3.96409 7.29007V4.95825H0.957273C0.347727 6.17325 0 7.5478 0 9.00007C0 10.4523 0.347727 11.8269 0.957273 13.0419L3.96409 10.7101Z"
-                                                    fill="#FBBC05"
-                                                />
-                                                <path
-                                                    d="M8.99976 3.57955C10.3211 3.57955 11.5075 4.03364 12.4402 4.92545L15.0216 2.34409C13.4629 0.891818 11.4257 0 8.99976 0C5.48158 0 2.43794 2.01682 0.957031 4.95818L3.96385 7.29C4.67158 5.16273 6.65567 3.57955 8.99976 3.57955Z"
-                                                    fill="#EA4335"
-                                                />
-                                            </g>
-                                            <defs>
-                                                <clipPath id="clip0_3_274">
-                                                    <rect
-                                                        width="18"
-                                                        height="18"
-                                                        fill="white"
-                                                    />
-                                                </clipPath>
-                                            </defs>
-                                        </svg>
-                                        <p className="font-semibold text-[14px]">
+                                        <GoogleSVG width="18" height="18" />
+                                        <p className="font-semibold text-[16px] mr-2">
                                             Google
                                         </p>
                                     </Link>
                                 </div>
-                                <div className="border px-[41px] rounded-xl cursor-pointer flex items-center justify-center lg:mt-0">
+                                <div className="border py-2 px-8  rounded-lg cursor-pointer flex items-center justify-center lg:mt-0">
                                     <Link
                                         to="/apple-login"
-                                        className="flex items-center gap-5"
+                                        className="flex items-center gap-2"
                                     >
                                         <AppleSVG width="24" height="24" />
-
-                                        <p className="font-semibold text-[14px]">
+                                        <p className="font-semibold text-[16x] mr-2">
                                             Apple
                                         </p>
                                     </Link>
@@ -258,7 +197,7 @@ const SignIn = () => {
                                     Don't have an account?{" "}
                                     <Link
                                         to="/signup"
-                                        className="font-bold cursor-pointer pl-1"
+                                        className="font-bold cursor-pointer pl-1 hover:text-[#F4530F] duration-300"
                                     >
                                         Sign Up
                                     </Link>
