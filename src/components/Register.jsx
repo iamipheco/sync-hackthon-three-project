@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoImage from "../assets/img/logo.png";
 import bgFlow from "../assets/img/bg.jpg";
@@ -8,18 +8,32 @@ import AppleSVG from "./SVGs/AppleSVG";
 import LoadingSVG from "./SVGs/LoadingSVG";
 
 const Register = () => {
-    const [fullname, setFullName] = useState(""); // Fixed the syntax error
+    const [fullname, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
+    const [isChecked, setIsChecked] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState("");
+    const navigate = useNavigate();
 
     const handleEmailChange = (e) => {
         const newEmail = e.target.value;
         setEmail(newEmail);
         localStorage.setItem("email", JSON.stringify(newEmail));
+    };
+
+    const validateEmail = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setErrors("Invalid email address");
+            return false;
+        }
+        return true;
+    };
+
+    const clearErrors = () => {
+        setErrors("");
     };
 
     const handleSubmit = async (e) => {
@@ -33,49 +47,57 @@ const Register = () => {
 
         const baseUrl = "https://flowease.onrender.com/api";
 
-        setErrors(""); // Changed passwordError to setErrors
+        setErrors("");
+        if (!isChecked) {
+            setErrors("Please agree to the Terms of Service and Policy");
+            setTimeout(clearErrors, 5000);
+            return;
+        }
+
+        if (!validateEmail()) {
+            setTimeout(clearErrors, 5000);
+            return;
+        }
 
         if (password.length < 5) {
-            setIsLoading(false);
             setErrors("Password should be at least 5 characters");
+            setTimeout(clearErrors, 5000);
+            return;
+        }
 
-            setTimeout(() => {
-                setErrors("");
-            }, 5000); // clear error message after 10 seconds
-        } else if (password !== confirmPassword) {
-            setIsLoading(false);
+        if (password !== confirmPassword) {
             setErrors("Passwords do not match");
+            setTimeout(clearErrors, 5000);
+            return;
+        }
 
-            setTimeout(() => {
-                setErrors("");
-            }, 5000); // clear error message after 10 seconds
-        } else {
-            try {
-                setIsLoading(true);
-                const res = await axios.post(`${baseUrl}/users/register`, body);
+        try {
+            setIsLoading(true);
+            const res = await axios.post(`${baseUrl}/users/register`, body);
 
-                if (res.data.success === true) {
-                    setIsLoading(false);
-                    setErrors("");
-                    navigate("/verify");
-                } else {
-                    throw new Error(
-                        res.data.message || "An error occurred during sign-in."
-                    );
-                }
-            } catch (error) {
-                setErrors(error.response.data.message);
+            if (res.data.success === true) {
                 setIsLoading(false);
-                console.log(error);
-
-                setTimeout(() => {
-                    setErrors("");
-                }, 5000); // clear error message after 10 seconds
+                setErrors("");
+                navigate("/verify");
+            } else {
+                throw new Error(
+                    res.data.message || "An error occurred during sign-up."
+                );
             }
+        } catch (error) {
+            setErrors(error.response?.data.message || "An error occurred");
+            setIsLoading(false);
+
+            setTimeout(clearErrors, 5000);
         }
     };
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        return () => {
+            // Clean up on component unmount
+            clearTimeout(clearErrors);
+        };
+    }, []);
 
     return (
         <div
@@ -118,11 +140,12 @@ const Register = () => {
                                     onChange={(e) =>
                                         setFullName(e.target.value)
                                     }
+                                    required
                                     className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
                                 />
                                 <label
-                                    htmlFor="Full Name"
+                                    htmlFor="full-name"
                                     className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
                   peer-placeholder-shown:text-gray-600
                   peer-placeholder-shown:top-3
@@ -137,7 +160,7 @@ const Register = () => {
                             {/* Email */}
                             <div className="mt-7 relative">
                                 <input
-                                    type="text"
+                                    type="email"
                                     id="email"
                                     name="email"
                                     placeholder="Email"
@@ -147,7 +170,7 @@ const Register = () => {
                   placeholder-transparent rounded-2xl"
                                 />
                                 <label
-                                    htmlFor="Email"
+                                    htmlFor="email"
                                     className="bg-white px-2 absolute left-6 -top-2 font-sans text-sm peer-placeholder-shown:text-base
                   peer-placeholder-shown:text-gray-600
                   peer-placeholder-shown:top-3
@@ -219,7 +242,9 @@ const Register = () => {
                                     type="checkbox"
                                     name="checkbox"
                                     id="checkbox"
-                                    className="w-[32px] h-[32px]"
+                                    checked={isChecked}
+                                    className="w-[22px] h-[22px]"
+                                    onChange={() => setIsChecked(!isChecked)}
                                 />
                                 <p className="text-[12px] text-textColor font-sans">
                                     By creating your account you agree to the{" "}

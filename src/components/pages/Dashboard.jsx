@@ -1,7 +1,10 @@
 import React from 'react'
 import DateTimeDisplay from '../DateTimeDisplay'
+import { useAuth } from '../../context/AuthContext';
 
 const Dashboard = () => {
+  
+
   return (
     <>
     <div className="">
