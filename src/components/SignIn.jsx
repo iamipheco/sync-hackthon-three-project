@@ -1,23 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoImage from "../assets/img/logo.png";
 import bgFlow from "../assets/img/bg.jpg";
 import AppleSVG from "./SVGs/AppleSVG";
-import axios from "axios";
-import GoogleSVG from "./SVGs/GoogleSVG";
 import LoadingSVG from "./SVGs/LoadingSVG";
+import { useAuth } from "../context/AuthContext";
+import GoogleSVG from "./SVGs/GoogleSVG";
 
 const SignIn = () => {
-
+    const { signIn, loading, authUser } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState("");
-    const navigate = useNavigate();
-    const baseUrl = "https://flowease.onrender.com/api";
+
 
     const handleSignIn = async (e) => {
         e.preventDefault();
+
+        // Clear any previous errors
+        setErrors("");
+
+        // Validation
+        if (!email) {
+            setErrors("Please provide your email.");
+            setTimeout(() => {
+                setErrors("");
+            }, 5000);
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setErrors("Invalid email address.");
+            setTimeout(() => {
+                setErrors("");
+            }, 5000);
+            return;
+        }
+
+        if (!password) {
+            setErrors("Please provide your password.");
+            setTimeout(() => {
+                setErrors("");
+            }, 5000);
+            return;
+        }
 
         const body = {
             email,
@@ -25,26 +52,21 @@ const SignIn = () => {
         };
 
         try {
-            setIsLoading(true);
+            await signIn(body);
 
-            const resp = await axios.post(`${baseUrl}/users/login`, body);
-
-            if (resp.data.success === true) {
-                setIsLoading(false);
-                setErrors("");
-                navigate("/dashboard");
-            } else {
-                throw new Error(
-                    resp.data.message || "An error occurred during sign-in."
-                );
-            }
+            // You may want to set the user in the context if signIn doesn't do it automatically  
         } catch (error) {
-            setErrors(error.response.data.message);
-            setIsLoading(false);
-            
+            if (error.response) {
+                setErrors(error.response.data.message);
+            } else if (error.request) {
+                setErrors("Please check your internet connection.");
+            } else {
+                setErrors("An error occurred during sign-in.");
+            }
+
             setTimeout(() => {
                 setErrors("");
-            }, 10000); // clear error message after 10 seconds
+            }, 5000);
         }
     };
 
@@ -61,7 +83,7 @@ const SignIn = () => {
                             alt="flowease-logo"
                             className="mx-auto w-32"
                         />
-                        <h1 className="text-base text-textDeep leading-10 text-center pt-10 capitalize">
+                        <h1 className="text-base leading-10 text-center pt-10 capitalize">
                             Let's sign you in
                         </h1>
                         <div className="">
@@ -80,12 +102,13 @@ const SignIn = () => {
                             {/* Email */}
                             <div className="mt-7 relative">
                                 <input
-                                    type="text"
+                                    type="email"
                                     id="email"
                                     name="email"
                                     placeholder="Email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    required
                                     className="peer h-[48px] w-full border-2 border-gray-300 text-textColor focus:outline-none font-sans pl-6
                   placeholder-transparent rounded-2xl"
                                 />
@@ -157,11 +180,10 @@ const SignIn = () => {
                             {/* Submit Button */}
                             <button
                                 type="submit"
-                                disabled={isLoading}
+                                disabled={loading}
                                 className="mt-9 bg-gradient-to-b from-[#F4530F] to-[#ff6929] hover:from-[#ff6929] hover:to-[#F4530F] transition-all  w-full h-[48px] text-white rounded-2xl cursor-pointer"
                             >
-                                {isLoading && (
-                                    
+                                { loading && (
                                     <LoadingSVG /> // loading spinner
                                 )}
                                 Sign In

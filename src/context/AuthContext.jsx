@@ -1,73 +1,69 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const AuthContext = createContext({});
 
-export function useAuth() {
-    return useContext(AuthContext);
-}
+export const AuthProvider = ({children}) => {
 
-export const AuthProvider = ({ children }) => {
-    const [authUser, setAuthUser] = useState(null);
-    const baseUrl = "https://flowease.onrender.com/api";
+    const [authUser, setAuthUser] = useState(() => {
+        const storedToken = localStorage.getItem("authToken");
+        return storedToken || null;
+    });
+
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const signIn = async (body) => {
-        try {
-            const res = await axios.post(`${baseUrl}/users/login`, body)
+        const baseUrl = "https://flowease.onrender.com/api";
 
-            if ( res.data.success === true ) {
-                const decodedToken = jwtDecode(res.data.message);
-                localStorage.setItem("authToken", res.data.message);
-                setAuthUser(decodedToken)
-            } else throw new Error("Authentication failed");
+        try {
+            setLoading(true);
+            const res = await axios.post(`${baseUrl}/users/login`, body);
+
+            if (res.data.success === true) {
+                const token = res.data.message;
+                localStorage.setItem("authToken", token);
+                setAuthUser(token);
+                navigate("/dashboard");
+            }
         } catch (error) {
-            return null;
+            throw error; // Propagate the error to handle it in components
+        } finally {
+            setLoading(false);
         }
     };
-    // const signUp = async (body) => {
-    //     try {
-    //         const res = await axios.post(`${baseUrl}/users/register`, body);
 
-    //         if (res.data.success) {
-    //             setAuthUser(null);
-    //             navigate("/verify");
-    //         } else if (res.data.success === false ) {
-    //             throw new Error(res.data.message);
-    //         }else {
-    //                 console.error(res.data.message);
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
+      useEffect(() => {
+        const storedToken = localStorage.getItem("authToken");
+        if (storedToken) {
+          setAuthUser(storedToken);
+          
+        }
+      }, []);
 
     const logOut = () => {
         localStorage.removeItem("authToken");
         setAuthUser(null);
+        navigate("/");
     };
-
-    useEffect(() => {
-        const storedToken = localStorage.getItem("authToken");
-        if (storedToken) {
-            const decodedToken = jwtDecode(storedToken);
-            setAuthUser(decodedToken);
-        }
-    }, []);
 
     return (
         <AuthContext.Provider
             value={{
                 authUser,
-                    signIn,
-                    //signUp,
-                    logOut,
-                    setAuthUser,
+                loading,
+                signIn,
+                logOut,
+                setAuthUser,
             }}
         >
             {children}
         </AuthContext.Provider>
     );
 };
+
+export function useAuth() {
+    return useContext(AuthContext);
+}

@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 
 const MainLayout = () => {
     return (
-        <section className="flex h-screen">
+        <div className="flex h-screen">
             {/* Sidebar */}
             <div>
                 <Sidebar />
@@ -15,10 +15,10 @@ const MainLayout = () => {
             <div className="flex flex-col flex-1 overflow-hidden">
                 <Header />
                 <div className="p-5 flex-1 overflow-x-hidden overflow-y-auto bg-[#FAFAFA] dark:bg-slate-800">
-                    <Outlet />
+                        <Outlet />
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
 

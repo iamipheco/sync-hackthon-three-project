@@ -37,7 +37,7 @@ const Sidebar = () => {
       </div>
       <div
         className={`${
-          isOpen ? "lg:w-60" : "hidden lg:block lg:w-20 translate-x-0:"
+          isOpen ? "lg:w-52" : "hidden lg:block lg:w-20 translate-x-0:"
         } fixed sm:relative inset-y-0 left-0 overflow-y-auto sm:overflow-y-hidden w-[200px] z-10 sm:w-56 h-screen p-5 bg-[#F7F8FA] dark:text-gray-200 dark:bg-slate-800 dark:border-r-[1px] border-r-2 border-[#EBECF2] dark:border-slate-600 font-semibold transform duration-500 transition-colors`}
       >
         <div className="lg:block lg:absolute -right-[2px] top-[98px] cursor-pointer hidden" onMouseEnter={() => handleMouseEnter(0)} onMouseLeave={() => handleMouseLeave(0)} onClick={() => setIsOpen(!isOpen)}>
@@ -65,7 +65,7 @@ const Sidebar = () => {
         </div>
         <div className="flex gap-x-4 items-center">
           <img
-            className={`w-12 cursor-pointer duration-500 pt-2 ${isOpen && "rotate-[360deg]"}`}
+            className="w-12 cursor-pointer duration-500 pt-2"
             src={feLogo}
             alt="logo"
           />
@@ -93,6 +93,7 @@ const Sidebar = () => {
                 style={{ transitionDelay: `${i + 0.05}00ms` }}
                 className={`whitespace-pre duration-500 ml-3 ${!isOpen && "scale-0 translate-x-28 overflow-hidden"}`}
               >
+                
                 {data.name}
               </h2>
               <h2

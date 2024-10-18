@@ -108,7 +108,7 @@ const ForgetPassword = () => {
                 <p className="text-center text-sm">
                   Remember your password?{" "}
                   <Link
-                    to="/signin"
+                    to="/"
                     className="font-bold cursor-pointer pl-1 hover:text-[#F4530F] duration-300"
                   >
                     Sign In
